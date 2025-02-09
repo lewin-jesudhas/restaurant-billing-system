@@ -4,8 +4,7 @@ from flask_cors import CORS
 import os
 
 app = Flask(__name__)
-CORS(app)
-CORS(app, resources={r"/*": {"origins": ["https://restaurant-billing-system-beige.vercel.app/"]}})
+CORS(app, resources={r"/*": {"origins": ["https://restaurant-billing-system-production.up.railway.app/"]}})
 @app.route('/')
 def index():
     menu = get_menu()  # Fetch menu items from Supabase

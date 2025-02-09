@@ -56,6 +56,11 @@
         }
 
         function placeOrder() {
+            if (Object.keys(cart).length === 0) {
+                alert("Please add an item before placing an order!");
+                return;
+            }
+
             let items = Object.entries(cart).map(([name, details]) => ({
                 name,
                 price: details.price,

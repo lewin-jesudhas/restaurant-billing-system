@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 from supabase_helpers import get_menu, update_cart, place_order, order_confirm
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
+CORS(app, resources={r"/*": {"origins": ["https://restaurant-billing-system-beige.vercel.app/"]}})
 @app.route('/')
 def index():
     menu = get_menu()  # Fetch menu items from Supabase

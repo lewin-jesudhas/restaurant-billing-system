@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taco Billing System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function placeOrder() {
+            let items = [];
+            document.querySelectorAll('.item-checkbox:checked').forEach((el) => {
+                items.push({
+                    name: el.dataset.name,
+                    price: parseFloat(el.dataset.price)
+                });
+            });
+
+            let totalPrice = items.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById("totalPrice").innerText = `₹₹{totalPrice.toFixed(2)}`;
+
+            fetch("/place_order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ items: items, total_price: totalPrice })
+            }).then(() => alert("Order Placed!"));
+        }
+    </script>
+</head>
+<body class="bg-gray-100 p-6">
+    <h1 class="text-3xl font-bold text-center mb-6 text-orange-600">Welcome to Twin Tacos 🌮</h1>
+
+    <div class="grid grid-cols-2 gap-6 max-w-6xl mx-auto">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold mb-4">Menu</h2>
+            <div class="grid grid-cols-2 gap-4">
+                {% for item in menu %}
+                <div class="border rounded-lg p-4 shadow-sm">
+                    <img src="/static/images/{{ item.name | replace(' ', '_') }}.jpg" alt="{{ item.name }}" class="w-full h-32 object-cover rounded-md">
+                    <h3 class="text-lg font-semibold mt-2">{{ item.name }}</h3>
+                    <p class="text-gray-600">₹{{ item.price }}</p>
+                    <input type="checkbox" class="item-checkbox mt-2" data-name="{{ item.name }}" data-price="{{ item.price }}">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold mb-4">Order Summary</h2>
+            <p class="text-gray-700">Total Price: <span id="totalPrice" class="font-bold">₹0.00</span></p>
+            <button onclick="placeOrder()" class="mt-4 px-6 py-3 bg-orange-500 text-white font-semibold rounded-lg shadow hover:bg-orange-600">
+                Place Order
+            </button>
+        </div>
+    </div>
+</body>
+</html> 
+
+

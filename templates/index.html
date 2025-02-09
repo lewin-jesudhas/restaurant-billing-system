@@ -69,16 +69,14 @@
 
             let totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-            fetch("/place_order", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ items: items, total_price: totalPrice })
-            }).then(() => {
-                alert("Order Placed!");
-                cart = {};
-                updateCartDisplay();
-            });
+            // Store order details in session storage before navigating
+            sessionStorage.setItem("orderItems", JSON.stringify(items));
+            sessionStorage.setItem("totalPrice", totalPrice);
+
+            // Redirect to order summary page
+            window.location.href = "/order_summary";
         }
+
     </script>
 </head>
 <body class="bg-gray-100 p-6">

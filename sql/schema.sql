@@ -10,7 +10,7 @@ CREATE TABLE public.orders (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     items JSONB NOT NULL,  -- Stores list of ordered items
     total_price FLOAT NOT NULL,
-    status TEXT DEFAULT 'Pending',
+    payment_type TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now()
 );
 

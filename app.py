@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from supabase_helpers import get_menu, update_cart, place_order
+from supabase_helpers import get_menu, update_cart, place_order, order_confirm
 
 app = Flask(__name__)
 
@@ -26,6 +26,30 @@ def order():
 
     response = place_order(items, total_price)
     return jsonify(response), 201
+
+@app.route('/order_summary')
+def order_summary():
+    return render_template("order_summary.html")
+
+# @app.route('/confirm_order', methods=['POST'])
+# def confirm_order():
+#     data = request.json
+#     print("Order Confirmed:", data)  # You can save this to a database
+#     return {"status": "success", "message": "Order placed successfully!"}
+
+@app.route('/confirm_order', methods=['POST'])
+def confirm_order():
+    try:
+        data = request.json  # Get JSON data from frontend
+        items = data.get("items", [])
+        total_price = float(data.get("total_price", 0))
+        payment_type = data.get("payment_method", "Cash")
+        response = order_confirm(items,total_price,payment_type)
+        return jsonify({"status": "success", "message": "Order placed successfully!", "data": response.data})
+    
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)

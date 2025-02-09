@@ -49,3 +49,11 @@ def place_order(items, total_price):
     }).execute()
     
     return {"status": "success", "order": data}
+
+def order_confirm(items,total_price,payment_type):
+    # Insert order into Supabase
+        supabase.table("orders").insert({
+            "items": items,  # JSON data of items
+            "total_price": total_price,
+            "payment_type": payment_type
+        }).execute()

@@ -1,8 +1,9 @@
 from supabase import create_client
+import os
 
-# Replace with your Supabase details
-SUPABASE_URL = "https://your-supabase-url.supabase.co"
-SUPABASE_KEY = "your-anon-key"
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
+
 # Initialize Supabase Client
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 

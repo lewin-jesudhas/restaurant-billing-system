@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from supabase_helpers import get_menu, update_cart, place_order, order_confirm
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -54,4 +55,5 @@ def confirm_order():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)

@@ -55,7 +55,7 @@
             }).then(() => {
                 alert("Order Confirmed!");
                 sessionStorage.clear();
-                window.location.href = "https://restaurant-billing-system-production.up.railway.app/menu";
+                window.location.href = window.location.origin + "/menu";
 
             });
         }

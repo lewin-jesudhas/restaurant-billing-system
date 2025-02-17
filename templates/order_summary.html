@@ -55,7 +55,8 @@
             }).then(() => {
                 alert("Order Confirmed!");
                 sessionStorage.clear();
-                window.location.href = "/menu";
+                window.location.href = window.location.origin + "/menu";
+
             });
         }
     </script>

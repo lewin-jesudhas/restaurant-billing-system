@@ -74,14 +74,36 @@
             sessionStorage.setItem("totalPrice", totalPrice);
 
             // Redirect to order summary page
-            window.location.href = "/order_summary";
+            window.location.href = window.location.origin + "/order_summary";
+
         }
 
     </script>
 </head>
 <body class="bg-gray-100 p-6">
-    <h1 class="text-3xl font-bold text-center mb-6 text-orange-600">Welcome To Twin Tacos! 🌮</h1>
+    <!-- Navbar -->
+    <nav class="flex justify-between items-center bg-white p-4 shadow-md rounded-lg mb-6 relative">
+        <!-- Centered Title -->
+        <div class="absolute left-1/2 transform -translate-x-1/2">
+            <h1 class="text-3xl font-bold text-orange-600 flex items-center">
+                Twin Tacos <span class="ml-1">🌮</span>
+            </h1>
+        </div>
 
+        <!-- Profile Icon -->
+        <div class="ml-auto relative">
+            <button class="focus:outline-none" id="profileBtn">
+                <img src="https://www.svgrepo.com/show/343494/profile-user-account.svg" alt="Profile" class="w-10 h-10 rounded-full border-2 border-gray-300">
+            </button>
+            <!-- Dropdown Menu -->
+            <div id="dropdownMenu" class="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg hidden">
+                <a href="/orders" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Orders</a>
+                <a href="/logout" class="block px-4 py-2 text-red-600 hover:bg-gray-100">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Rest of your existing content -->
     <div class="grid grid-cols-2 gap-6 max-w-7xl mx-auto">
         <!-- Menu Section -->
         <div class="bg-white p-6 rounded-lg shadow-md">
@@ -110,5 +132,20 @@
             </button>
         </div>
     </div>
+
+    <!-- Dropdown Toggle Script -->
+    <script>
+        document.getElementById("profileBtn").addEventListener("click", function () {
+            document.getElementById("dropdownMenu").classList.toggle("hidden");
+        });
+
+        document.addEventListener("click", function (event) {
+            let dropdown = document.getElementById("dropdownMenu");
+            if (!document.getElementById("profileBtn").contains(event.target)) {
+                dropdown.classList.add("hidden");
+            }
+        });
+    </script>
 </body>
+
 </html>

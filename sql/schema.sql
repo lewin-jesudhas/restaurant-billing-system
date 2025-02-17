@@ -14,6 +14,12 @@ CREATE TABLE public.orders (
     created_at TIMESTAMP DEFAULT now()
 );
 
+CREATE TABLE users (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
+);
+
 
 INSERT INTO public.menu (name, price, category) 
 VALUES 

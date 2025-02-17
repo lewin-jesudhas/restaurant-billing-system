@@ -6,6 +6,8 @@ from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(24)  # Session security
+# app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)  # Set session expiry time
+
 bcrypt = Bcrypt(app)
 CORS(app, resources={r"/*": {"origins": ["https://restaurant-billing-system-production.up.railway.app/"]}})
 
@@ -23,7 +25,8 @@ def login():
 
         if user and bcrypt.check_password_hash(user["password"], password):
             session["user"] = username  # Store in session
-            return jsonify({"status": "success", "redirect": "/menu"}), 200
+            base_url = os.getenv("BASE_URL", "http://127.0.0.1:5000")  # Fallback to localhost if not set
+            return jsonify({"status": "success", "redirect": f"{base_url}/menu"}), 200
 
         return jsonify({"status": "error", "message": "Invalid username or password"}), 401
 

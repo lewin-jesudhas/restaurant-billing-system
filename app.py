@@ -9,7 +9,7 @@ app.config["SECRET_KEY"] = os.urandom(24)  # Session security
 # app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)  # Set session expiry time
 
 bcrypt = Bcrypt(app)
-CORS(app, resources={r"/*": {"origins": ["https://restaurant-billing-system-production.up.railway.app/"]}})
+CORS(app, resources={r"/*": {"origins": ["https://restaurant-billing-system-production.up.railway.app"]}})
 
 
 @app.route("/", methods=["GET", "POST"])

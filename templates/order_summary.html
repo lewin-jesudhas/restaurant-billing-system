@@ -55,7 +55,7 @@
             }).then(() => {
                 alert("Order Confirmed!");
                 sessionStorage.clear();
-                window.location.href = "/";
+                window.location.href = "/menu";
             });
         }
     </script>
@@ -68,15 +68,16 @@
         <div id="cartItems" class="space-y-2"></div>
         <p class="text-gray-700 mt-4">Total Price: <span id="totalPrice" class="font-bold">₹0.00</span></p>
 
-        <h2 class="text-xl font-semibold mt-6">Select Payment Method</h2>
-        <div class="mt-2">
-            <label class="flex items-center">
-                <input type="radio" name="payment" value="Cash" class="mr-2"> Cash
+        <h2 class="text-2xl font-bold mt-6 text-gray-800">Select Payment Method</h2>
+        <div class="mt-4 flex justify-between items-center border p-3 rounded-lg bg-gray-100">
+            <label class="flex items-center text-lg font-medium">
+                <input type="radio" name="payment" value="Cash" class="mr-2 w-5 h-5"> Cash
             </label>
-            <label class="flex items-center mt-2">
-                <input type="radio" name="payment" value="UPI" class="mr-2"> UPI
+            <label class="flex items-center text-lg font-medium">
+                <input type="radio" name="payment" value="UPI" class="mr-2 w-5 h-5"> UPI
             </label>
         </div>
+        
 
         <button id="confirmOrderBtn" onclick="confirmOrder()" class="mt-4 px-6 py-3 bg-orange-500 text-white font-semibold rounded-lg shadow hover:bg-orange-600">
             Confirm Order

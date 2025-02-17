@@ -57,3 +57,12 @@ def order_confirm(items,total_price,payment_type):
             "total_price": total_price,
             "payment_type": payment_type
         }).execute()
+
+
+def get_user_credentials(username):
+    """Fetch stored hashed password for a given username."""
+    response = supabase.table("users").select("username, password").eq("username", username).single().execute()
+
+    if response.data:
+        return response.data  # Returns {'username': 'Rohan', 'password': 'hashed_pw'}
+    return None

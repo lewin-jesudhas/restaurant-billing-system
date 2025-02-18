@@ -3,6 +3,7 @@ from supabase_helpers import get_menu, update_cart, place_order, order_confirm, 
 from flask_cors import CORS
 import os
 from flask_bcrypt import Bcrypt
+from config import supabase
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(24)  # Session security
@@ -25,8 +26,8 @@ def login():
 
         if user and bcrypt.check_password_hash(user["password"], password):
             session["user"] = username  # Store in session
-            base_url = os.getenv("BASE_URL", "http://127.0.0.1:5000")  # Fallback to localhost if not set
-            return jsonify({"status": "success", "redirect": f"{base_url}/menu"}), 200
+            #base_url = os.getenv("BASE_URL", "http://127.0.0.1:5000")  # Fallback to localhost if not set
+            return jsonify({"status": "success", "redirect": f"/menu"}), 200
 
         return jsonify({"status": "error", "message": "Invalid username or password"}), 401
 
@@ -98,6 +99,35 @@ def confirm_order():
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/orders")
+def get_orders():
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    response = supabase.table("orders").select("*").execute()
+    orders = response.data
+
+    # Debugging - print structure to confirm
+    #print("Fetched Orders:", orders)
+
+    # Ensure 'items' is converted to a list
+    for order in orders:
+        if isinstance(order.get("items"), str):  # Check if items are stored as JSON strings
+            order["items"] = eval(order["items"])  # Convert string to list (use json.loads() if JSON formatted)
+
+    return render_template("orders.html", orders=orders)
+
+
+@app.route("/complete_order", methods=["POST"])
+def complete_order():
+    order_id = request.json.get("order_id")
+    if order_id:
+        response = supabase.table("orders").update({"status": "complete"}).eq("id", order_id).execute()
+        if response.data:
+            return jsonify({"message": "Order marked as complete"}), 200
+        return jsonify({"error": "Failed to update order"}), 400
+    return jsonify({"error": "Invalid order ID"}), 400
 
 
 if __name__ == "__main__":

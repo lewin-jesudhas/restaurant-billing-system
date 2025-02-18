@@ -1,0 +1,189 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders</title>
+    <script>
+        async function markComplete(orderId) {
+            const response = await fetch("/complete_order", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ order_id: orderId })
+            });
+
+            if (response.ok) {
+                document.getElementById(`status-${orderId}`).innerText = "Complete";
+                document.getElementById(`button-${orderId}`).disabled = true;
+            } else {
+                alert("Failed to update order");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Orders</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Items</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>
+                    <ul>
+                        {% for item in order["items"] %}
+                        <li>{{ item.name }} ({{ item.quantity }} x ₹{{ item.price }})</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>₹{{ order.total_price }}</td>
+                <td>{{ order.payment_type }}</td>
+                <td>{{ order.created_at }}</td>
+                <td class="status-{{ order.status.lower() }}">{{ order.status }}</td>
+                <td>
+                    {% if order.status == 'Pending' %}
+                    <button onclick="completeOrder('{{ order.id }}')">Mark as Complete</button>
+                    {% else %}
+                    <span>Completed</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+        }
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background: #007BFF;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .completed {
+            color: green;
+            font-weight: bold;
+        }
+        .pending {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        async function markComplete(orderId) {
+            const response = await fetch("/complete_order", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ order_id: orderId })
+            });
+
+            if (response.ok) {
+                document.getElementById(`status-${orderId}`).innerText = "Complete";
+                document.getElementById(`status-${orderId}`).classList.add("completed");
+                document.getElementById(`button-${orderId}`).disabled = true;
+            } else {
+                alert("Failed to update order");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Orders</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Items</th>
+                <th>Total Price</th>
+                <th>Payment Type</th>
+                <th>Created At</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>
+                    <ul>
+                        {% for item in order["items"] %}
+                        <li>{{ item.name }} ({{ item.quantity }} x ₹{{ item.price }})</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>₹{{ order.total_price }}</td>
+                <td>{{ order.payment_type }}</td>
+                <td>{{ order.created_at }}</td>
+                <td id="status-{{ order.id }}" class="{{ 'pending' if order.status == 'Pending' else 'Completed' }}">
+                    {{ order.status }}
+                </td>
+                <td>
+                    {% if order.status == 'Pending' %}
+                    <button id="button-{{ order.id }}" onclick="markComplete('{{ order.id }}')">Mark as Complete</button>
+                    {% else %}
+                    <span class="completed">Completed</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

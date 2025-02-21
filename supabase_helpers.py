@@ -50,13 +50,16 @@ def place_order(items, total_price):
     
     return {"status": "success", "order": data}
 
-def order_confirm(items,total_price,payment_type):
-    # Insert order into Supabase
-        supabase.table("orders").insert({
-            "items": items,  # JSON data of items
-            "total_price": total_price,
-            "payment_type": payment_type
-        }).execute()
+def order_confirm(items, total_price, payment_type, customer_name, customer_phone):
+    response = supabase.table("orders").insert({
+        "items": items,
+        "total_price": total_price,
+        "payment_type": payment_type,
+        "customer_name": customer_name,
+        "customer_phone": customer_phone
+    }).execute()
+    return response  # Return the response
+
 
 
 def get_user_credentials(username):

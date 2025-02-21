@@ -4,6 +4,7 @@ from flask_cors import CORS
 import os
 from flask_bcrypt import Bcrypt
 from config import supabase
+from datetime import datetime
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(24)  # Session security
@@ -94,11 +95,20 @@ def confirm_order():
         items = data.get("items", [])
         total_price = float(data.get("total_price", 0))
         payment_type = data.get("payment_method", "Cash")
-        response = order_confirm(items, total_price, payment_type)
+        customer_name = data.get("customer_name", "").strip()
+        customer_phone = str(data.get("customer_phone", "")).strip()  # Ensure string format
+
+        response = order_confirm(items, total_price, payment_type, customer_name, customer_phone)
+
+        # Fix: Ensure response is valid before accessing `response.data`
+        if response is None:
+            return jsonify({"status": "error", "message": "Database insertion failed"}), 500
+
         return jsonify({"status": "success", "message": "Order placed successfully!", "data": response.data})
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @app.route("/orders")
 def get_orders():
@@ -113,6 +123,10 @@ def get_orders():
 
     # Ensure 'items' is converted to a list
     for order in orders:
+        try:
+            order["created_at"] = datetime.strptime(order["created_at"], "%Y-%m-%dT%H:%M:%S.%f")
+        except ValueError:
+            order["created_at"] = datetime.strptime(order["created_at"], "%Y-%m-%dT%H:%M:%S") 
         if isinstance(order.get("items"), str):  # Check if items are stored as JSON strings
             order["items"] = eval(order["items"])  # Convert string to list (use json.loads() if JSON formatted)
 

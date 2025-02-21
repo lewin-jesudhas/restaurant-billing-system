@@ -32,33 +32,52 @@
         function confirmOrder() {
             let button = document.getElementById("confirmOrderBtn");
             let paymentMethod = document.querySelector('input[name="payment"]:checked');
+            let customerName = document.getElementById("customerName").value.trim();
+            let customerPhone = document.getElementById("customerPhone").value.trim();
+
             if (!paymentMethod) {
                 alert("Please select a payment method!");
                 return;
             }
+
+            if (customerName === "" || customerPhone === "") {
+                alert("Please enter your name and phone number!");
+                return;
+            }
+
             button.disabled = true;
             button.innerHTML = `<svg class="animate-spin h-5 w-5 mr-2 text-white inline-block" viewBox="0 0 24 24">
                           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 01-8 8z"></path>
                         </svg> Processing...`;
 
+
             let orderDetails = {
                 items: JSON.parse(sessionStorage.getItem("orderItems")),
                 total_price: sessionStorage.getItem("totalPrice"),
-                payment_method: paymentMethod.value
+                payment_method: paymentMethod.value,
+                customer_name: customerName,
+                customer_phone: customerPhone
             };
 
             fetch("/confirm_order", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(orderDetails)
-            }).then(() => {
-                alert("Order Confirmed!");
-                sessionStorage.clear();
-                window.location.href = window.location.origin + "/menu";
-
+            }).then(response => response.json()).then(data => {
+                if (data.status === "success") {
+                    alert("Order Confirmed!");
+                    sessionStorage.clear();
+                    window.location.href = window.location.origin + "/menu";
+                } else {
+                    alert("Error: " + data.message);
+                }
+            }).catch(error => {
+                alert("Something went wrong!");
+                console.error(error);
             });
-        }
+}
+
     </script>
 </head>
 <body class="bg-gray-100 p-6">
@@ -79,6 +98,17 @@
             </label>
         </div>
         
+        <h2 class="text-2xl font-bold mt-6 text-gray-800">Customer Details</h2>
+        <div class="mt-4">
+            <label class="block font-medium">Name:</label>
+            <input type="text" id="customerName" class="w-full border p-2 rounded-md mt-1" placeholder="Enter your name">
+        </div>
+
+        <div class="mt-4">
+            <label class="block font-medium">Phone Number:</label>
+            <input type="tel" id="customerPhone" class="w-full border p-2 rounded-md mt-1" placeholder="Enter your phone number">
+        </div>
+
 
         <button id="confirmOrderBtn" onclick="confirmOrder()" class="mt-4 px-6 py-3 bg-orange-500 text-white font-semibold rounded-lg shadow hover:bg-orange-600">
             Confirm Order
